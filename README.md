@@ -34,7 +34,25 @@ Ej: recibe
  "categoria_id": 5
 }
 ```
-
+- METODO GET `localhost:3000/libro`   DEVUELVE UN ARRAY DE JSON CON TODOS LOS LIBROS EN LA DB
+   * Ej: `localhost:3000/libro` devuelve:
+```
+[ {
+        "libro_id": 1,
+        "nombre": "1984",
+        "descripcion": "EN UN FUTURO DISTOPICO..",
+        "categoria_id": 4,
+        "persona_id": 6
+    },
+    {
+        "libro_id": 2,
+        "nombre": "EL ALEPH",
+        "descripcion": "UNA COLECCIÓN DE CUENTOS DE JORGE LUIS BORGES",
+        "categoria_id": 5,
+        "persona_id": 6
+    }
+]
+```
 - METODO GET `localhost:3000/libro/{libro_id}`   DEVUELVE LOS DATOS DEL LIBRO {LIBRO_ID}
    * Ej: `localhost:3000/libro/2` devuelve:
 ```
