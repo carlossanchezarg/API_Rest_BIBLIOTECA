@@ -65,7 +65,7 @@ Ej: recibe
 }
 ```
 
-- METODO PUT `localhost:3000/libro/{libro_id}`  MODIFICA LA DESCRIPCION DEL LIBRO CON {LIBRO_ID} CON LA NUEVA DESCRIPCION ENVIADA EN EL JSON DEL BODY
+- METODO PUT `localhost:3000/libro/{libro_id}`  MODIFICA LA DESCRIPCION DEL LIBRO {LIBRO_ID} CON LA NUEVA DESCRIPCION ENVIADA EN EL JSON DEL BODY
    * EJ modifica descripcion de un libro en la DB:`localhost:3000/libro/2` 
     body:
 ```  
@@ -78,6 +78,6 @@ Ej: recibe
     {"persona_id":7}
     ```
 
-- METODO PUT `localhost:3000/libro/devolver/{libro_id}` DEVUELVE EL LIBRO CON LA ID(NUMERICO)
+- METODO PUT `localhost:3000/libro/devolver/{libro_id}` DEVUELVE EL LIBRO {LIBRO_ID}
 
-- METODO DELETE `localhost:3000/libro/{libro_id}` BORRA EL LIBRO CON LA ID(NUMERICO)
+- METODO DELETE `localhost:3000/libro/{libro_id}` BORRA EL LIBRO  {LIBRO_ID}
