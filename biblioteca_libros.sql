@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 14-03-2021 a las 20:20:22
+-- Tiempo de generación: 16-03-2021 a las 02:30:57
 -- Versión del servidor: 10.4.17-MariaDB
 -- Versión de PHP: 7.3.26
 
@@ -37,9 +37,13 @@ CREATE TABLE `categorias` (
 --
 
 INSERT INTO `categorias` (`nombre`, `categoria_id`) VALUES
-('Autores Argentinos', 5),
-('Bestsellers', 4),
-('Infantil', 3);
+('AUTORES ARGENTINOS', 5),
+('AUTORES DE CIENCIA FICCIÓN', 10),
+('AUTORES DE TERROR', 7),
+('BESTSELLERS', 4),
+('INFANTIL', 3),
+('LIBROS EN INGLÉS', 8),
+('LITERATURA ÁRABE', 9);
 
 -- --------------------------------------------------------
 
@@ -60,12 +64,15 @@ CREATE TABLE `libros` (
 --
 
 INSERT INTO `libros` (`libro_id`, `nombre`, `descripcion`, `categoria_id`, `persona_id`) VALUES
-(1, '1984', 'EN UN FUTURO DISTOPICO..', 4, 6),
+(1, '1984', 'EN UN FUTURO DISTÓPICO..', 4, NULL),
 (2, 'EL ALEPH', 'UNA COLECCIÓN DE CUENTOS DE JORGE LUIS BORGES', 5, 6),
 (3, 'EL GATO CON BOTAS', 'UN CLASICO DE LA LITERATURA PARA NIÑOS.', 3, 7),
-(5, 'CENICIENTA', 'UN CUENTO DE HADAS.', 3, NULL),
+(5, 'CENICIENTA', 'UN CUENTO DE HADAS.', 3, 6),
 (6, 'BLANCA NIEVES Y LOS SIETE ENANITOS.', 'BLANCA NIEVES ES UNA PRINCESA..', 3, 7),
-(7, 'EL GAUCHO MARTÍN FIERRO', 'UNA DE LAS MAS RECONOCIDAS OBRAS DE LA LITERATURA ARGENTINA.', 5, NULL);
+(7, 'EL GAUCHO MARTÍN FIERRO', 'UNA DE LAS MAS RECONOCIDAS OBRAS DE LA LITERATURA ARGENTINA.', 5, NULL),
+(8, 'LOS TRES PATITOS', 'SON TRES PATITOS', 3, NULL),
+(9, 'PINOCHO', 'SIN DESCRIPCIÓN.', 3, NULL),
+(11, 'RAYUELA', 'ES LA SEGUNDA NOVELA DEL ESCRITOR JULIO CORTÁZAR.', 5, NULL);
 
 -- --------------------------------------------------------
 
@@ -87,7 +94,8 @@ CREATE TABLE `personas` (
 
 INSERT INTO `personas` (`persona_id`, `nombre`, `apellido`, `email`, `alias`) VALUES
 (6, 'CARLOS', 'SANCHEZ', 'CARLOSSAN@GMAIL.COM', 'CARLITOS89'),
-(7, 'PEPITO', 'GARCIA', 'PEPITOG@GMAIL.COM', 'PEPITOG');
+(7, 'PEPITO', 'GARCIA', 'PEPITOG@GMAIL.COM', 'PEPITOG'),
+(8, 'JOSESITO', 'PEREZ', 'JOSESITOP@GMAIL.COM', 'JOSESITO');
 
 --
 -- Índices para tablas volcadas
@@ -112,7 +120,7 @@ ALTER TABLE `libros`
 -- Indices de la tabla `personas`
 --
 ALTER TABLE `personas`
-  ADD PRIMARY KEY (`persona_id`,`email`),
+  ADD PRIMARY KEY (`persona_id`) USING BTREE,
   ADD UNIQUE KEY `email` (`email`);
 
 --
@@ -123,19 +131,19 @@ ALTER TABLE `personas`
 -- AUTO_INCREMENT de la tabla `categorias`
 --
 ALTER TABLE `categorias`
-  MODIFY `categoria_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `categoria_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de la tabla `libros`
 --
 ALTER TABLE `libros`
-  MODIFY `libro_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `libro_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de la tabla `personas`
 --
 ALTER TABLE `personas`
-  MODIFY `persona_id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `persona_id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- Restricciones para tablas volcadas

@@ -1,14 +1,18 @@
 const express=require('express');
-
+const cors = require('cors');
 const app=express();
+app.use(cors());
 const port= process.env.PORT?process.env.PORT:3000;
 
 app.use(express.urlencoded());
-app.use(express.json());/*Permite mapear las peticiones de json a javascript object*/
+app.use(express.json());
 
-/******conexion con la DB*******/
+/*******************************************************************/
+/******************** CONEXION CON LA BD ***************************/
+/*******************************************************************/
 const mysql=require('mysql');
 const util=require('util');
+
 
 const conexion=mysql.createConnection({
     host:'localhost',
@@ -27,35 +31,108 @@ conexion.connect((error)=>{
 
 const qy=util.promisify(conexion.query).bind(conexion);
 
-/*********************************/
-
+/*****************************************************************/
+/******************** RUTAS CATEGORIAS ****************************/
+/*****************************************************************/
 /* Crear nueva categoria */
 app.post('/categoria',async (req,res)=>{
-    try{   
+    try{
         if(!req.body.nombre){
             throw new Error("Faltan datos.");
         }
 
-        const categoria=req.body.nombre;
+        query='select * from categorias where nombre=?';
+        existeCategoria=await qy(query,req.body.nombre);
+        if(existeCategoria.length>0){
+            throw new Error("Ese nombre de categoria ya existe.")
+        }
 
         query='INSERT INTO categorias (nombre) VALUE (?)';
-        respuesta=await qy(query,categoria);
+        respuesta=await qy(query,req.body.nombre.toUpperCase());
+
+        query='select * from categorias where nombre=?';
+        consultaNuevaCategoria=await qy(query,req.body.nombre);
+
+        res.status(200).send(consultaNuevaCategoria[0]);
+    }
+
+    catch(e){
+        res.status(413).send({mensaje:e.message});
+    }
+});
+/***/
+
+/* Consultar categorias */
+app.get('/categoria',async (req,res)=>{
+    try{   
+        query='SELECT * FROM CATEGORIAS';
+        respuesta=await qy(query);
 
         res.status(200).send(respuesta);
     }
 
     catch(e){
-        res.status(413).send({message:e.message});
+        res.status(413).send([]);
     }
 });
+/***/
 
+/* Consultar una categoria usando id numerico*/
+app.get('/categoria/:id',async (req,res)=>{
+    try{   
+        query='SELECT * FROM CATEGORIAS where categoria_id=?';
+        respuesta=await qy(query,req.params.id);
+
+        if(respuesta.length==0){
+            throw new Error("Categoria no encontrada.");
+        }
+
+        res.status(200).send(respuesta[0]);
+    }
+
+    catch(e){
+        res.status(413).send({mensaje:e.message});
+    }
+});
+/***/
+
+/* Borrar categoria */
+app.delete('/categoria/:id',async (req,res)=>{
+    try{
+        query='SELECT * FROM libros WHERE categoria_id=?';
+        respuesta=await qy(query,req.params.id);
+        if(respuesta.length>0){
+            throw new Error("Categoria con libros asociados, no se puede eliminar.");
+        }
+
+        query='SELECT * FROM categorias WHERE categoria_id=?';
+        respuesta=await qy(query,req.params.id);
+        if(respuesta.length==0){
+            throw new Error("No existe la categoria indicada.");
+        }
+
+        query=' DELETE FROM categorias WHERE categoria_id=?';
+        respuesta=await qy(query,req.params.id);
+
+        res.status(200).send({"mensaje":"La categoria se borro correctamente."});
+    }
+
+    catch(e){
+        res.status(413).send({mensaje:e.message});
+    }
+});
+/***/
+
+/****************************************************************/
+/******************** RUTAS PERSONA *******************************/
+/****************************************************************/
 /*  Hacerse socio de la Biblio */
 app.post('/persona',async (req,res)=>{
     try{   
         if(!req.body.alias||!req.body.nombre||!req.body.apellido||!req.body.email){
             throw new Error("Debe llenar todos los campos obligatorios!");
         }
-
+        
         const persona={
             alias:req.body.alias.toUpperCase(),
             nombre:req.body.nombre.toUpperCase(),
@@ -63,18 +140,60 @@ app.post('/persona',async (req,res)=>{
             email:req.body.email.toUpperCase()
         };
 
+        query='SELECT * FROM personas WHERE email=?';
+        respuesta=await qy(query,persona.email);
+        if(respuesta>0){
+            throw new Error("El email ya se ecuentra registrado.")
+        }
+
         query='INSERT INTO personas (alias,nombre,apellido,email) VALUE (?,?,?,?)';
         respuesta=await qy(query,[persona.alias,persona.nombre,persona.apellido,persona.email]);
+        
+        query='SELECT * FROM personas WHERE email=?';
+        respuesta=await qy(query,persona.email);
 
-        res.status(200).send(respuesta);
+        res.status(200).send(respuesta[0]);
     }
 
     catch(e){
-        res.status(413).send({message:e.message});
+        res.status(413).send({mensaje:e.message});
     }
 });
 
+/*consultar personas */
+app.get('/persona',async (req,res)=>{
+    try{
+        query='SELECT * FROM personas';
+        respuesta=await qy(query);
+        res.status(200).send(respuesta);
+    }
+    catch(e){
+        res.status(413).send({mensaje:e.message});
+    }
+});
+/***/
 
+/*consultar datos de una persona usando id numerico. */
+app.get('/persona/:id',async (req,res)=>{
+    try{
+        query='SELECT * FROM personas WHERE persona_id=?';
+        respuesta=await qy(query,req.params.id);
+        if(respuesta.length==0){
+            throw new Error("No se encuentra esa persona.");
+        }
+        res.status(200).send(respuesta[0])
+
+    }
+    catch(e){
+        res.status(413).send({mensaje:e.message});
+    }
+});
+/***/
+
+
+/****************************************************************/
+/******************** RUTAS LIBRO *******************************/
+/****************************************************************/
 /* Ingresar nuevo libro */
 app.post('/libro',async (req, res)=>{
     try{   
@@ -99,7 +218,6 @@ app.post('/libro',async (req, res)=>{
             libro.persona_id=req.body.persona_id;
         }
         
-         
         const queryLibros='select * from libros where nombre=?';   
         const existeLibro=await qy(queryLibros,[libro.nombre]);
         
@@ -119,16 +237,16 @@ app.post('/libro',async (req, res)=>{
             query='INSERT INTO libros (nombre,descripcion,categoria_id,persona_id) VALUE (?,?,?,?)';
             respuesta=await qy(query,[libro.nombre,libro.descripcion,libro.categoria_id,libro.persona_id]);
 
-            const nuevolibro='select * from libros where nombre=?';   
-            const muestroLibro=await qy(nuevolibro,[libro.nombre]);
+            const consultarLibro='select * from libros where nombre=?';   
+            const muestroLibro=await qy(consultarLibro,[libro.nombre]);
             res.status(200).send(muestroLibro[0]);
         }
     }
     catch(e){
-        res.status(413).send({message:e.message});
+        res.status(413).send({mensaje:e.message});
     }
 });
-
+/****/
 
 /*consultar catalogo */
 app.get('/libro',async (req, res)=>{
@@ -138,10 +256,10 @@ app.get('/libro',async (req, res)=>{
         res.send(todosLosLibros);     
     }
     catch(e){
-        res.status(413).send({message:e.message});
+        res.status(413).send({mensaje:e.message});
     }
 });
-
+/****/
 
 /*Consultar por un libro en particular usando su id numérica. */
 app.get('/libro/:id',async (req, res)=>{
@@ -156,10 +274,10 @@ app.get('/libro/:id',async (req, res)=>{
         res.status(200).send(consultaLibro[0]);     
     }
     catch(e){
-        res.status(413).send({message:e.message});
+        res.status(413).send({mensaje:e.message});
     }
 });
-
+/****/
 
 
 /*Modificar descripcion del libro */
@@ -181,71 +299,69 @@ app.put('/libro/:id',async (req, res)=>{
         res.send(consultaLibro[0],"modificado");   
     }
     catch(e){
-        res.status(413).send({message:e.message});
+        res.status(413).send({mensaje:e.message});
     }
 });
+/****/
 
 /*Prestar libro */
 app.put('/libro/prestar/:id',async (req, res)=>{
     try{ 
-        query='SELECT persona_id FROM libros where libro_id=?';
-        estaPrestado=await qy(query,req.params.id);
-         
-        if(estaPrestado[0].persona_id){
-            throw new Error("el libro ya se encuentra prestado, no se puede prestar hasta que no se devuelva.");
-        } 
 
         query='SELECT * FROM libros where libro_id=?';
         existeLibro=await qy(query,req.params.id);
         if(existeLibro.length==0){
             throw new Error("No se econtro el libro.");
         }
+
+        query='SELECT persona_id FROM libros where libro_id=?';
+        estaPrestado=await qy(query,req.params.id);
+        if(estaPrestado[0].persona_id){
+            throw new Error("el libro ya se encuentra prestado, no se puede prestar hasta que no se devuelva.");
+        } 
+        
         query='SELECT * FROM personas where persona_id=?';
-        existePersona=await qy(query,req.body.persona_id);
+        existePersona=await qy(query,[req.body.persona_id]);
         if(existePersona.length==0){
             throw new Error("No se encontro la persona a la que se quiere prestar el libro.");
         }
-       
-        const persona=req.body.persona_id;
-        const libro_id=req.params.id;
 
         query='UPDATE libros SET persona_id=? WHERE libro_id = ?;';
-        respuesta=await qy(query,[persona,libro_id]);
+        respuesta=await qy(query,[req.body.persona_id,req.params.id]);
         
-        query='SELECT * FROM libros where libro_id=?';
-        consultaLibro=await qy(query,libro_id);
-        
-        res.status(200).send({message:"El libro se presto correctamente."});
+        res.status(200).send({mensaje:"El libro se presto correctamente."});
     }
     catch(e){
-        res.status(413).send({message:e.message});
+        res.status(413).send({mensaje:e.message});
     }
 });
+/****/
 
 /*Devolver libro */
 app.put('/libro/devolver/:id',async (req, res)=>{
     try{ 
-        query='SELECT persona_id FROM libros where libro_id=?';
-        estaPrestado=await qy(query,req.params.id);
-        if(!estaPrestado[0].persona_id){
-            throw new Error("Ese libro no estaba prestado!");
-        } 
 
-        query='SELECT * FROM libros where libro_id=?';
-        existeLibro=await qy(query,req.params.id);
+        query='SELECT * FROM libros WHERE libro_id=?';
+        existeLibro=await qy(query,[req.params.id]);
         if(existeLibro.length==0){
             throw new Error("Ese libro no existe!");
         }
-      
-        query='UPDATE libros SET persona_id=NULL WHERE libro_id = ?;';
+        query='SELECT persona_id FROM libros where libro_id=?';
+        estaPrestado=await qy(query,[req.params.id]);
+        if(!estaPrestado[0].persona_id){
+            throw new Error("Ese libro no estaba prestado!");
+        } 
+     
+        query='UPDATE libros SET persona_id=NULL WHERE libro_id = ?';
         respuesta=await qy(query,[req.params.id]);
         
-        res.status(200).send({message:"Se realizó la devolución correctamente."});
+        res.status(200).send({mensaje:"Se realizó la devolución correctamente."});
     }
     catch(e){
-        res.status(413).send({message:e.message});
+        res.status(413).send({mensaje:e.message});
     }
 });
+/****/
 
 /*Borrar libro */
 app.delete('/libro/:id',async (req, res)=>{
@@ -265,14 +381,18 @@ app.delete('/libro/:id',async (req, res)=>{
         query='delete from libros WHERE libro_id = ?;';
         respuesta=await qy(query,[req.params.id]);
         
-        res.status(200).send({message:"El libro fue borrado correctamente."});
+        res.status(200).send({mensaje:"El libro fue borrado correctamente."});
     }
     catch(e){
-        res.status(413).send({message:e.message});
+        res.status(413).send({mensaje:e.message});
     }
 });
+/****/
 
+
+/****SERVER****/
 app.listen(port,()=>{
     console.log("Servidor escuchando en el puerto",port);
 });
+
 
