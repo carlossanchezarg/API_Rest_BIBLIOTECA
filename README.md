@@ -50,7 +50,7 @@
 
 * `DELETE '/categoria/:id'` retorna: status 200 y {mensaje: "se borro correctamente"} - status: 413, {mensaje: <descripcion del error>} que puese ser: "error inesperado", "categoria con libros asociados, no se puede eliminar", "no existe la categoria indicada"
 
-    - SI BORRO BIEN: status 200
+    - SI BORRO OK: status 200
     - SI NO PUDO BORRAR: STATUS 413 -->"error inesperado", "categoria con libros asociados, no se puede eliminar", "no existe la categoria indicada"
 
 No se debe implementar el PUT

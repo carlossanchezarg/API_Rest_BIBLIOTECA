@@ -42,7 +42,7 @@ app.post('/categoria',async (req,res)=>{
         }
 
         query='select * from categorias where nombre=?';
-        existeCategoria=await qy(query,req.body.nombre);
+        const existeCategoria=await qy(query,req.body.nombre);
         if(existeCategoria.length>0){
             throw new Error("Ese nombre de categoria ya existe.")
         }
@@ -51,7 +51,7 @@ app.post('/categoria',async (req,res)=>{
         respuesta=await qy(query,req.body.nombre.toUpperCase());
 
         query='select * from categorias where nombre=?';
-        consultaNuevaCategoria=await qy(query,req.body.nombre);
+        const consultaNuevaCategoria=await qy(query,req.body.nombre);
 
         res.status(200).send(consultaNuevaCategoria[0]);
     }
@@ -161,16 +161,21 @@ app.post('/persona',async (req,res)=>{
 });
 
 /*consultar personas */
-app.get('/persona',async (req,res)=>{
-    try{
+app.get('/persona', async (req, res) => {
+    try {
         query='SELECT * FROM personas';
-        respuesta=await qy(query);
-        res.status(200).send(respuesta);
+        respuesta = await qy(query);
+        if(respuesta.length > 0){
+            res.status(200).send(respuesta);
+        } else {
+            res.status(200).send({mensaje:'No hay ninguna persona registrada.'})
+        }
     }
-    catch(e){
-        res.status(413).send({mensaje:e.message});
-    }
+    catch(e) {
+        res.status(413).send({mensaje:'Error inesperado.'})
+    };
 });
+
 /***/
 
 /*consultar datos de una persona usando id numerico. */
@@ -190,6 +195,54 @@ app.get('/persona/:id',async (req,res)=>{
 });
 /***/
 
+/*modificar persona usando id numerico*/
+app.put('/persona/:id', async (req, res) => {
+    try{
+        query='SELECT * FROM personas WHERE persona_id=?';
+        respuesta=await qy(query,req.params.id);
+        if(respuesta.length==0){
+            throw new Error("No se encuentra esa persona.");
+        }
+        //email no puede ser modificado
+        if(!req.body.alias||!req.body.nombre||!req.body.apellido){
+            throw new Error("Para modificar debe enviar nuevos alias,nombre y apellido.El email no puede ser modificado.");
+        }
+      
+        const nombre = req.body.nombre.toUpperCase();
+        const apellido = req.body.apellido.toUpperCase();
+        const alias = req.body.alias.toUpperCase();
+    
+        respuesta =  await qy('UPDATE personas SET  nombre=?, apellido =?, alias=? WHERE persona_id=?', [nombre, apellido, alias, req.params.id]);
+        const personaModificada = await qy('SELECT * FROM personas where persona_id=?', [req.params.id]);
+        res.status(200).send(personaModificada[0]);
+    } 
+    catch(e){    
+        res.status(413).send({mensaje:e.message});
+    }
+});
+
+/*Borrar persona usando id numerico*/
+app.delete('/persona/:id', async (req, res) => {
+    try {
+        query='SELECT * FROM personas WHERE persona_id=?';
+        respuesta=await qy(query,req.params.id);
+        if(respuesta.length==0){
+            throw new Error("No se encuentra esa persona.");
+        }
+
+        query='SELECT * FROM libros WHERE persona_id=?';
+        respuesta=await qy(query,req.params.id);
+        if(respuesta.length>0){
+                throw new Error("Esa persona tiene libros asociados, no se puede eliminar.")
+        }
+
+        respuesta = await qy('DELETE FROM personas WHERE persona_id=?', [req.params.id]);
+        res.status(200).send({mensaje:'Persona borrada correctamente.'});
+    }
+    catch(e) {
+        res.status(413).send({mensaje:e.message});
+    }
+});
 
 /****************************************************************/
 /******************** RUTAS LIBRO *******************************/
@@ -253,7 +306,7 @@ app.get('/libro',async (req, res)=>{
     try{
         query='select * from libros';   
         const todosLosLibros=await qy(query);
-        res.send(todosLosLibros);     
+        res.status(200).send(todosLosLibros);     
     }
     catch(e){
         res.status(413).send({mensaje:e.message});
@@ -287,6 +340,12 @@ app.put('/libro/:id',async (req, res)=>{
             throw new Error("Solo se puede modificar la descripcion del libro.");
         }
 
+        query='SELECT * FROM libros where libro_id=?';
+        existeLibro=await qy(query,req.params.id);
+        if(existeLibro.length==0){
+            throw new Error("No se econtro el libro.");
+        }
+
         const nuevaDescripcion=req.body.descripcion.toUpperCase();
         const libro_id=req.params.id.toUpperCase();
 
@@ -296,7 +355,7 @@ app.put('/libro/:id',async (req, res)=>{
         query='SELECT * FROM libros where libro_id=?';
         consultaLibro=await qy(query,libro_id);
 
-        res.send(consultaLibro[0],"modificado");   
+        res.status(200).send(consultaLibro[0]);   
     }
     catch(e){
         res.status(413).send({mensaje:e.message});
@@ -317,7 +376,7 @@ app.put('/libro/prestar/:id',async (req, res)=>{
         query='SELECT persona_id FROM libros where libro_id=?';
         estaPrestado=await qy(query,req.params.id);
         if(estaPrestado[0].persona_id){
-            throw new Error("el libro ya se encuentra prestado, no se puede prestar hasta que no se devuelva.");
+            throw new Error("El libro ya se encuentra prestado, no se puede prestar hasta que no se devuelva.");
         } 
         
         query='SELECT * FROM personas where persona_id=?';
@@ -329,7 +388,7 @@ app.put('/libro/prestar/:id',async (req, res)=>{
         query='UPDATE libros SET persona_id=? WHERE libro_id = ?;';
         respuesta=await qy(query,[req.body.persona_id,req.params.id]);
         
-        res.status(200).send({mensaje:"El libro se presto correctamente."});
+        res.status(200).send("El libro se presto correctamente.");
     }
     catch(e){
         res.status(413).send({mensaje:e.message});
