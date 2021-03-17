@@ -41,14 +41,14 @@ app.post('/categoria',async (req,res)=>{
             throw new Error("Faltan datos.");
         }
 
-        query='select * from categorias where nombre=?';
+        let query='select * from categorias where nombre=?';
         const existeCategoria=await qy(query,req.body.nombre);
         if(existeCategoria.length>0){
             throw new Error("Ese nombre de categoria ya existe.")
         }
 
         query='INSERT INTO categorias (nombre) VALUE (?)';
-        respuesta=await qy(query,req.body.nombre.toUpperCase());
+        let respuesta=await qy(query,req.body.nombre.toUpperCase());
 
         query='select * from categorias where nombre=?';
         const consultaNuevaCategoria=await qy(query,req.body.nombre);
@@ -65,8 +65,8 @@ app.post('/categoria',async (req,res)=>{
 /* Consultar categorias */
 app.get('/categoria',async (req,res)=>{
     try{   
-        query='SELECT * FROM CATEGORIAS';
-        respuesta=await qy(query);
+        let query='SELECT * FROM CATEGORIAS';
+        let respuesta=await qy(query);
 
         res.status(200).send(respuesta);
     }
@@ -80,8 +80,8 @@ app.get('/categoria',async (req,res)=>{
 /* Consultar una categoria usando id numerico*/
 app.get('/categoria/:id',async (req,res)=>{
     try{   
-        query='SELECT * FROM CATEGORIAS where categoria_id=?';
-        respuesta=await qy(query,req.params.id);
+        let query='SELECT * FROM CATEGORIAS where categoria_id=?';
+        let respuesta=await qy(query,req.params.id);
 
         if(respuesta.length==0){
             throw new Error("Categoria no encontrada.");
@@ -99,8 +99,8 @@ app.get('/categoria/:id',async (req,res)=>{
 /* Borrar categoria */
 app.delete('/categoria/:id',async (req,res)=>{
     try{
-        query='SELECT * FROM libros WHERE categoria_id=?';
-        respuesta=await qy(query,req.params.id);
+        let query='SELECT * FROM libros WHERE categoria_id=?';
+        let respuesta=await qy(query,req.params.id);
         if(respuesta.length>0){
             throw new Error("Categoria con libros asociados, no se puede eliminar.");
         }
@@ -140,8 +140,8 @@ app.post('/persona',async (req,res)=>{
             email:req.body.email.toUpperCase()
         };
 
-        query='SELECT * FROM personas WHERE email=?';
-        respuesta=await qy(query,persona.email);
+        let query='SELECT * FROM personas WHERE email=?';
+        let respuesta=await qy(query,persona.email);
         if(respuesta>0){
             throw new Error("El email ya se ecuentra registrado.")
         }
@@ -163,8 +163,8 @@ app.post('/persona',async (req,res)=>{
 /*consultar personas */
 app.get('/persona', async (req, res) => {
     try {
-        query='SELECT * FROM personas';
-        respuesta = await qy(query);
+        let query='SELECT * FROM personas';
+        let respuesta = await qy(query);
         if(respuesta.length > 0){
             res.status(200).send(respuesta);
         } else {
@@ -181,8 +181,8 @@ app.get('/persona', async (req, res) => {
 /*consultar datos de una persona usando id numerico. */
 app.get('/persona/:id',async (req,res)=>{
     try{
-        query='SELECT * FROM personas WHERE persona_id=?';
-        respuesta=await qy(query,req.params.id);
+        let query='SELECT * FROM personas WHERE persona_id=?';
+        let respuesta=await qy(query,req.params.id);
         if(respuesta.length==0){
             throw new Error("No se encuentra esa persona.");
         }
@@ -198,8 +198,8 @@ app.get('/persona/:id',async (req,res)=>{
 /*modificar persona usando id numerico*/
 app.put('/persona/:id', async (req, res) => {
     try{
-        query='SELECT * FROM personas WHERE persona_id=?';
-        respuesta=await qy(query,req.params.id);
+        let query='SELECT * FROM personas WHERE persona_id=?';
+        let respuesta=await qy(query,req.params.id);
         if(respuesta.length==0){
             throw new Error("No se encuentra esa persona.");
         }
@@ -224,8 +224,8 @@ app.put('/persona/:id', async (req, res) => {
 /*Borrar persona usando id numerico*/
 app.delete('/persona/:id', async (req, res) => {
     try {
-        query='SELECT * FROM personas WHERE persona_id=?';
-        respuesta=await qy(query,req.params.id);
+        let query='SELECT * FROM personas WHERE persona_id=?';
+        let respuesta=await qy(query,req.params.id);
         if(respuesta.length==0){
             throw new Error("No se encuentra esa persona.");
         }
@@ -287,8 +287,8 @@ app.post('/libro',async (req, res)=>{
         }else if(existePersona.length==0&&req.body.persona_id){
             throw new Error("No existe la persona indicada.");
         }else{   
-            query='INSERT INTO libros (nombre,descripcion,categoria_id,persona_id) VALUE (?,?,?,?)';
-            respuesta=await qy(query,[libro.nombre,libro.descripcion,libro.categoria_id,libro.persona_id]);
+            let query='INSERT INTO libros (nombre,descripcion,categoria_id,persona_id) VALUE (?,?,?,?)';
+            let respuesta=await qy(query,[libro.nombre,libro.descripcion,libro.categoria_id,libro.persona_id]);
 
             const consultarLibro='select * from libros where nombre=?';   
             const muestroLibro=await qy(consultarLibro,[libro.nombre]);
@@ -304,7 +304,7 @@ app.post('/libro',async (req, res)=>{
 /*consultar catalogo */
 app.get('/libro',async (req, res)=>{
     try{
-        query='select * from libros';   
+        let query='select * from libros';   
         const todosLosLibros=await qy(query);
         res.status(200).send(todosLosLibros);     
     }
@@ -317,8 +317,8 @@ app.get('/libro',async (req, res)=>{
 /*Consultar por un libro en particular usando su id numérica. */
 app.get('/libro/:id',async (req, res)=>{
     try{
-        query='select * from libros where libro_id=?';
-        consultaLibro=await qy(query,req.params.id);
+        let query='select * from libros where libro_id=?';
+        const consultaLibro=await qy(query,req.params.id);
 
         if(consultaLibro.length==0){
             throw new Error("No se encuentra el libro solicitado.");
@@ -340,8 +340,8 @@ app.put('/libro/:id',async (req, res)=>{
             throw new Error("Solo se puede modificar la descripcion del libro.");
         }
 
-        query='SELECT * FROM libros where libro_id=?';
-        existeLibro=await qy(query,req.params.id);
+        let query='SELECT * FROM libros where libro_id=?';
+        const existeLibro=await qy(query,req.params.id);
         if(existeLibro.length==0){
             throw new Error("No se econtro el libro.");
         }
@@ -350,10 +350,10 @@ app.put('/libro/:id',async (req, res)=>{
         const libro_id=req.params.id.toUpperCase();
 
         query='UPDATE libros SET descripcion=? WHERE libro_id = ?;';
-        respuesta=await qy(query,[nuevaDescripcion,libro_id]);
+        let respuesta=await qy(query,[nuevaDescripcion,libro_id]);
         
         query='SELECT * FROM libros where libro_id=?';
-        consultaLibro=await qy(query,libro_id);
+        const consultaLibro=await qy(query,libro_id);
 
         res.status(200).send(consultaLibro[0]);   
     }
@@ -367,26 +367,26 @@ app.put('/libro/:id',async (req, res)=>{
 app.put('/libro/prestar/:id',async (req, res)=>{
     try{ 
 
-        query='SELECT * FROM libros where libro_id=?';
-        existeLibro=await qy(query,req.params.id);
+        let query='SELECT * FROM libros where libro_id=?';
+        const existeLibro=await qy(query,req.params.id);
         if(existeLibro.length==0){
             throw new Error("No se econtro el libro.");
         }
 
         query='SELECT persona_id FROM libros where libro_id=?';
-        estaPrestado=await qy(query,req.params.id);
+        const estaPrestado=await qy(query,req.params.id);
         if(estaPrestado[0].persona_id){
             throw new Error("El libro ya se encuentra prestado, no se puede prestar hasta que no se devuelva.");
         } 
         
         query='SELECT * FROM personas where persona_id=?';
-        existePersona=await qy(query,[req.body.persona_id]);
+        const existePersona=await qy(query,[req.body.persona_id]);
         if(existePersona.length==0){
             throw new Error("No se encontro la persona a la que se quiere prestar el libro.");
         }
 
         query='UPDATE libros SET persona_id=? WHERE libro_id = ?;';
-        respuesta=await qy(query,[req.body.persona_id,req.params.id]);
+        let respuesta=await qy(query,[req.body.persona_id,req.params.id]);
         
         res.status(200).send("El libro se presto correctamente.");
     }
@@ -400,19 +400,19 @@ app.put('/libro/prestar/:id',async (req, res)=>{
 app.put('/libro/devolver/:id',async (req, res)=>{
     try{ 
 
-        query='SELECT * FROM libros WHERE libro_id=?';
-        existeLibro=await qy(query,[req.params.id]);
+        let query='SELECT * FROM libros WHERE libro_id=?';
+        const existeLibro=await qy(query,[req.params.id]);
         if(existeLibro.length==0){
             throw new Error("Ese libro no existe!");
         }
         query='SELECT persona_id FROM libros where libro_id=?';
-        estaPrestado=await qy(query,[req.params.id]);
+        const estaPrestado=await qy(query,[req.params.id]);
         if(!estaPrestado[0].persona_id){
             throw new Error("Ese libro no estaba prestado!");
         } 
      
         query='UPDATE libros SET persona_id=NULL WHERE libro_id = ?';
-        respuesta=await qy(query,[req.params.id]);
+        let respuesta=await qy(query,[req.params.id]);
         
         res.status(200).send({mensaje:"Se realizó la devolución correctamente."});
     }
@@ -425,20 +425,20 @@ app.put('/libro/devolver/:id',async (req, res)=>{
 /*Borrar libro */
 app.delete('/libro/:id',async (req, res)=>{
     try{ 
-        query='SELECT * FROM libros where libro_id=?';
-        existeLibro=await qy(query,req.params.id);
+        let query='SELECT * FROM libros where libro_id=?';
+        const existeLibro=await qy(query,req.params.id);
         if(existeLibro.length==0){
             throw new Error("No se encuentra ese libro.");
         } 
 
         query='SELECT persona_id FROM libros where libro_id=?';
-        estaPrestado=await qy(query,req.params.id);
+        const estaPrestado=await qy(query,req.params.id);
         if(estaPrestado[0].persona_id){
             throw new Error("Ese libro esta prestado, no se puede borrar!!");
         } 
       
         query='delete from libros WHERE libro_id = ?;';
-        respuesta=await qy(query,[req.params.id]);
+        let respuesta=await qy(query,[req.params.id]);
         
         res.status(200).send({mensaje:"El libro fue borrado correctamente."});
     }
