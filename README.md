@@ -5,7 +5,7 @@
 
 |    nombre        |               categoria_id                |
 | ---------------- | ------------------------------------------|
-| varchar(50) único| int(11) (auto) primary key     |
+| varchar(50) único| int(11) (auto) primary key                |
 
 ## Tabla "libros"
 ---------------------
