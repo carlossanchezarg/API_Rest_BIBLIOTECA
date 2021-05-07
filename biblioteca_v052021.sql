@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 18-03-2021 a las 02:25:04
+-- Tiempo de generación: 08-05-2021 a las 00:14:16
 -- Versión del servidor: 10.4.17-MariaDB
 -- Versión de PHP: 7.3.26
 
@@ -29,27 +29,22 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `categorias` (
   `nombre` varchar(50) NOT NULL,
-  `categoria_id` int(11) NOT NULL
+  `id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Volcado de datos para la tabla `categorias`
 --
 
-INSERT INTO `categorias` (`nombre`, `categoria_id`) VALUES
+INSERT INTO `categorias` (`nombre`, `id`) VALUES
 ('AUTORES ARGENTINOS', 5),
-('AUTORES DE CIENCIA FICCIÓN', 10),
 ('AUTORES ESPAÑOLES', 18),
-('AUTORESCHINOS', 22),
+('AUTORES USA', 29),
 ('BESTSELLERS', 4),
-('CLASICOS DE CIENCIA FICCIÓN', 15),
 ('CLASICOS DE LA LITERATURA', 13),
-('CUENTOS CHINOS', 23),
-('DRAMA', 20),
 ('INFANTIL', 3),
-('LIBROS EN INGLÉS', 8),
 ('NUEVA CATEGORIA', 16),
-('SUPER NUEVA CATEGORIA', 17);
+('ROMANCE', 32);
 
 -- --------------------------------------------------------
 
@@ -58,7 +53,7 @@ INSERT INTO `categorias` (`nombre`, `categoria_id`) VALUES
 --
 
 CREATE TABLE `libros` (
-  `libro_id` int(11) NOT NULL,
+  `id` int(11) NOT NULL,
   `nombre` varchar(60) NOT NULL,
   `descripcion` varchar(60) NOT NULL,
   `categoria_id` int(11) NOT NULL,
@@ -69,22 +64,22 @@ CREATE TABLE `libros` (
 -- Volcado de datos para la tabla `libros`
 --
 
-INSERT INTO `libros` (`libro_id`, `nombre`, `descripcion`, `categoria_id`, `persona_id`) VALUES
-(1, '1984', 'EN UN FUTURO DISTÓPICO..', 4, NULL),
-(2, 'EL ALEPH', 'UNA COLECCIÓN DE CUENTOS DE JORGE LUIS BORGES', 5, 6),
-(3, 'EL GATO CON BOTAS', 'UN CLASICO DE LA LITERATURA PARA NIÑOS.', 3, 7),
-(5, 'CENICIENTA', 'UN CUENTO DE HADAS.', 3, 6),
+INSERT INTO `libros` (`id`, `nombre`, `descripcion`, `categoria_id`, `persona_id`) VALUES
+(2, 'EL ALEPH', 'UN CLÁSCO DE JLB', 5, NULL),
+(5, 'CENICIENTA', 'UN CUENTO DE HADAS.', 3, 7),
 (6, 'BLANCA NIEVES Y LOS SIETE ENANITOS.', 'CUENTO CLÁSICO DE LOS HERMANOS GRIMM', 3, 7),
-(7, 'EL GAUCHO MARTÍN FIERRO', 'UNA DE LAS MAS RECONOCIDAS OBRAS DE LA LITERATURA ARGENTINA.', 5, NULL),
-(8, 'LOS TRES PATITOS', ' ZARAZA', 3, 14),
-(9, 'PINOCHO', 'SIN DESCRIPCIÓN.', 3, 14),
-(12, 'RAYUELA', 'UNA DE LAS NOVELAS MAS RECONOCIDAS DE JULIO CORTAZAR.', 5, 6),
-(13, 'LOS PIRATAS DEL CARIBE', 'LOS PIRATAS..', 3, NULL),
-(14, 'EL HOMBRE DUPLICADO', 'LA NOVELA MAS RECONOCIDA DEL AUTOR JOSÉ SARAMAGO', 18, NULL),
-(15, 'EL TUNEL', 'LA NOVELA MAS RECONOCIDA DEL AUTOR DE ERNESTO SABATO', 5, NULL),
-(18, 'LIBRO X', 'PIRIPRP', 5, 6),
-(19, 'LIBRO NUEVO', 'ZARAZA', 5, 6),
-(20, 'PEPE', 'ZARAZA', 5, NULL);
+(7, 'EL GAUCHO MARTÍN FIERRO', 'CLÁSICO DE LA LITERATURA ARGENTINA', 5, NULL),
+(8, 'LOS TRES PATITOS', 'SON TRES PATITO', 3, NULL),
+(12, 'RAYUELA', 'UNA DE LAS NOVELAS MAS RECONOCIDAS DE JULIO CORTAZAR.', 5, NULL),
+(15, 'EL TUNEL', 'LA NO MAS RECONOCIDA DEL AUTOR ERNESTO SABATO', 5, 39),
+(29, 'LA ODISEA DE LOS GILES', 'ODISEAA', 4, NULL),
+(30, 'LA BELLA Y LA BESTIA', 'CUENTOS PARA DORMIR', 3, 14),
+(31, 'EL GATO CON BOTAS', 'UN CLASICO PARA NIÑOS', 3, NULL),
+(32, 'VALIS', 'VALIS', 13, NULL),
+(33, 'FIRULAIS', 'FIRULAIS ES UN PERRITO MUY SIMPÁTICO', 3, 48),
+(35, 'JUANITO Y EL LOBO', 'JUANITO ES UN JOVEN MENTIROSO..', 3, NULL),
+(36, 'LOS TRES CHANCHITOS', 'SE TRATA DE TRES CHANCHITOS', 3, NULL),
+(37, 'EL GAUCHO ALAMBRE', 'SIN DESCRIPCIÓN', 5, NULL);
 
 -- --------------------------------------------------------
 
@@ -93,7 +88,7 @@ INSERT INTO `libros` (`libro_id`, `nombre`, `descripcion`, `categoria_id`, `pers
 --
 
 CREATE TABLE `personas` (
-  `persona_id` int(20) NOT NULL,
+  `id` int(20) NOT NULL,
   `nombre` varchar(50) NOT NULL,
   `apellido` varchar(50) NOT NULL,
   `email` varchar(50) NOT NULL,
@@ -104,11 +99,15 @@ CREATE TABLE `personas` (
 -- Volcado de datos para la tabla `personas`
 --
 
-INSERT INTO `personas` (`persona_id`, `nombre`, `apellido`, `email`, `alias`) VALUES
-(6, 'CARLOS', 'SANCHEZ', 'CARLOSSAN@GMAIL.COM', 'CARLITOS89'),
+INSERT INTO `personas` (`id`, `nombre`, `apellido`, `email`, `alias`) VALUES
 (7, 'PEDRO', 'GARCIA', 'PEPITOG@GMAIL.COM', 'PEDROG'),
 (14, 'ROBERTO', 'FERNADEZ', 'ELCHAVO@GMAIL.COM', 'ROBERTO'),
-(20, 'PERSONA', 'PARA BORRAR', 'SEBORRA@GMAIL.COM', 'BORRADO');
+(30, 'CARLOS', 'ROTH', 'ROC@GMAIL.COM', 'CARLOSROTH'),
+(34, 'FIORELA', 'BERTONE', 'FBERTONE@GMAIL.COM', 'FIORUCHIS'),
+(36, 'REVERENDO', 'ALEGRIA', 'REVE@REVERENDO.COM.AR', 'REVERENDO'),
+(39, 'ANDREA', 'FULANA', 'AFULANA@HOTMAIL.COM.AR', 'ANDREA F'),
+(40, 'PEPITO', 'SUAREZ', 'PEPI@HOTMAIL.COM', 'PEPI'),
+(48, 'JOSESITO', 'SUAREZ', 'JOSU@GMAIL.COM', 'JOSU');
 
 --
 -- Índices para tablas volcadas
@@ -118,23 +117,23 @@ INSERT INTO `personas` (`persona_id`, `nombre`, `apellido`, `email`, `alias`) VA
 -- Indices de la tabla `categorias`
 --
 ALTER TABLE `categorias`
-  ADD PRIMARY KEY (`categoria_id`),
+  ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `nombre` (`nombre`);
 
 --
 -- Indices de la tabla `libros`
 --
 ALTER TABLE `libros`
-  ADD PRIMARY KEY (`libro_id`),
+  ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `nombre` (`nombre`),
-  ADD KEY `categoria_id` (`categoria_id`),
-  ADD KEY `persona_ibfk_1` (`persona_id`);
+  ADD KEY `persona_id` (`persona_id`),
+  ADD KEY `categoria_id` (`categoria_id`);
 
 --
 -- Indices de la tabla `personas`
 --
 ALTER TABLE `personas`
-  ADD PRIMARY KEY (`persona_id`) USING BTREE,
+  ADD PRIMARY KEY (`id`) USING BTREE,
   ADD UNIQUE KEY `email` (`email`);
 
 --
@@ -145,19 +144,19 @@ ALTER TABLE `personas`
 -- AUTO_INCREMENT de la tabla `categorias`
 --
 ALTER TABLE `categorias`
-  MODIFY `categoria_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT de la tabla `libros`
 --
 ALTER TABLE `libros`
-  MODIFY `libro_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
 -- AUTO_INCREMENT de la tabla `personas`
 --
 ALTER TABLE `personas`
-  MODIFY `persona_id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
 
 --
 -- Restricciones para tablas volcadas
@@ -167,8 +166,8 @@ ALTER TABLE `personas`
 -- Filtros para la tabla `libros`
 --
 ALTER TABLE `libros`
-  ADD CONSTRAINT `libros_ibfk_1` FOREIGN KEY (`categoria_id`) REFERENCES `categorias` (`categoria_id`),
-  ADD CONSTRAINT `persona_ibfk_1` FOREIGN KEY (`persona_id`) REFERENCES `personas` (`persona_id`);
+  ADD CONSTRAINT `libros_ibfk_1` FOREIGN KEY (`persona_id`) REFERENCES `personas` (`id`) ON DELETE NO ACTION,
+  ADD CONSTRAINT `libros_ibfk_2` FOREIGN KEY (`categoria_id`) REFERENCES `categorias` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
