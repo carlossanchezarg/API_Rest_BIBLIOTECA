@@ -3,21 +3,21 @@
 ## Tabla "categorias"
 ---------------------
 
-|    nombre        |               categoria_id                |
+|    nombre        |               id                |
 | ---------------- | ------------------------------------------|
 | varchar(50) único| int(11) (auto) primary key                |
 
 ## Tabla "libros"
 ---------------------
 
-|         libro_id             |        nombre              |   descripcion   | categoria_id |persona_id |
+|         id             |        nombre              |   descripcion   | categoria_id |persona_id |
 | ---------------------------  | -------------------------- | --------------- | ------------ |---------- |
 | int(11) auto   primary key   |       varchar(60)   unico  |  varchar(60)    |    int(11)   | int(11)   |
 
 ## Tabla "personas"
 ---------------------
 
-|           persona_id          |         nombre        |     apellido    |       email          |   alias      |
+|           id          |         nombre        |     apellido    |       email          |   alias      |
 | ----------------------------  | --------------------- | --------------- | ---------------------| ------------ |
 | int(11)  (auto primary key)   |       varchar(50)     |    varchar(50)  |  varchar(50) (unico) | varchar(50)  |
 
