@@ -1,20 +1,22 @@
-# Base de datos
+# API Rest para administrar una biblioteca utilizando NodeJS y Express para hacer operaciones CRUD en una base de datos MySQL.  
 
-## Tabla "categorias"
+## Base de datos
+
+### Tabla "categorias"
 ---------------------
 
 |    nombre        |               id                |
 | ---------------- | ------------------------------------------|
 | varchar(50) único| int(11) (auto) primary key                |
 
-## Tabla "libros"
+### Tabla "libros"
 ---------------------
 
 |         id             |        nombre              |   descripcion   | categoria_id |persona_id |
 | ---------------------------  | -------------------------- | --------------- | ------------ |---------- |
 | int(11) auto   primary key   |       varchar(60)   unico  |  varchar(60)    |    int(11)   | int(11)   |
 
-## Tabla "personas"
+### Tabla "personas"
 ---------------------
 
 |           id          |         nombre        |     apellido    |       email          |   alias      |
@@ -25,9 +27,9 @@
 
 
 
-# RUTAS API
+## RUTAS API
 ----------------
-## CATEGORIA
+### CATEGORIA
 
 * `POST '/categoria'` recibe: {nombre: string} retorna: status: 200, {id: numerico, nombre: string} - status: 413, {mensaje: <descripcion del error>} que puede ser: "faltan datos", "ese nombre de categoria ya existe", "error inesperado"
 
@@ -56,7 +58,7 @@
 No se debe implementar el PUT
 
 
-## PERSONA 
+### PERSONA 
 
 * `POST '/persona'` recibe: {nombre: string, apellido: string, alias: string, email: string} retorna: status: 200, {id: numerico, nombre: string, apellido: string, alias: string, email: string} - status: 413, {mensaje: <descripcion del error>} que puede ser: "faltan datos", "el email ya se encuentra registrado", "error inesperado"
 
@@ -92,7 +94,7 @@ No se debe implementar el PUT
    - retorna: 200 y {mensaje: "se borro correctamente"} o
    - SI NO SE PUEDE: STATUS 413, {mensaje: <descripcion del error>} "error inesperado", "no existe esa persona", "esa persona tiene libros asociados, no se puede eliminar"
 
-## LIBROS
+### LIBROS
 
 - METODO POST `localhost:3000/libro/{libro_id}`   CREA UN NUEVO LIBRO CON LOS DATOS ENVIADO EN EL JSON DEL BODY. EL CAMPO NOMBRE Y CATEGORIA SON OBLIGATORIOS.
 Ej: recibe 
