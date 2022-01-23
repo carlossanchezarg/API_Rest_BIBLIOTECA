@@ -1,5 +1,5 @@
-# API Rest para administrar una biblioteca utilizando NodeJS y Express para hacer operaciones CRUD en una base de datos MySQL.  
-
+# API Rest  
+## Desarrollo de API Rest utilizando NodeJS y Express para hacer operaciones CRUD en una base de datos MySQL. 
 ## Base de datos
 
 ### Tabla "categorias"
